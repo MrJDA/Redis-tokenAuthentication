@@ -1,6 +1,7 @@
 package com.oocl.web.service;
 
 import com.oocl.web.entities.User;
+import com.oocl.web.util.JedisUtil;
 import com.oocl.web.util.TokenUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +38,11 @@ public class UserService {
         }
         return users;
     }
-    private Jedis jedis = new Jedis("127.0.0.1", 6379);
+//    private Jedis jedis = new Jedis("127.0.0.1", 6379);
     public String login(User user) {
         User DBUser = new User("123456","123456");
-        String token = jedis.get(user.getUserName());
+//        String token = jedis.get(user.getUserName());
+        String token = (String) JedisUtil.get(user.getUserName());
         if(token == null)
         {
             Map<String, Object> map = new HashMap<>();
@@ -48,8 +50,7 @@ public class UserService {
             logger.info("---------------create token---------------------------");
             token = TokenUtil.createToken(map);
             logger.info("---------------"+token+"-------------------");
-            jedis.set(user.getUserName(), token);
-            jedis.expire(user.getUserName(), 60);
+            JedisUtil.set(user.getUserName(), token);
         }
         return token;
     }

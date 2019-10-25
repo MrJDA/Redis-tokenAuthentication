@@ -1,6 +1,7 @@
 package com.oocl.web.interceptor;
 
 import com.oocl.web.annotatons.AuthToken;
+import com.oocl.web.util.JedisUtil;
 import com.oocl.web.util.TokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +24,8 @@ public class AuthInterceptor implements HandlerInterceptor {
 
 //    @Autowired
 //    private RedisTemplate redisTemplate;
+//    private Jedis jedis = new Jedis("127.0.0.1", 6379);
 
-    private Jedis jedis = new Jedis("127.0.0.1", 6379);
     private Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -50,7 +51,7 @@ public class AuthInterceptor implements HandlerInterceptor {
                    sendErrorMessage(response, "警告!用户信息错误", 401);
                    return false;
                }
-               Object redisToken = jedis.get(userName);
+               Object redisToken = JedisUtil.get(userName);
                if(redisToken == null || !(redisToken.toString()).equals(token)) {
                    sendErrorMessage(response, "警告!用户信息错误", 401);
                    return false;
