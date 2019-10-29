@@ -1,6 +1,7 @@
 package com.oocl.web.controller;
 import com.oocl.web.annotatons.AuthToken;
 import com.oocl.web.entities.User;
+import com.oocl.web.exception.WrongUserInfoException;
 import com.oocl.web.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody User user){
+    public ResponseEntity login(@RequestBody User user) throws WrongUserInfoException {
         return ResponseEntity.ok(userService.login(user));
     }
 

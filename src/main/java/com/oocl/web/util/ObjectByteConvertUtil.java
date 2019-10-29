@@ -1,6 +1,5 @@
 package com.oocl.web.util;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,11 +46,9 @@ public class ObjectByteConvertUtil {
             byteArrayInputStream = new ByteArrayInputStream(bytes);
             objectInputStream = new ObjectInputStream(byteArrayInputStream);
             object = objectInputStream.readObject();
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }finally {
+        } finally {
             if(objectInputStream != null) {
                 try {
                     objectInputStream.close();
@@ -69,5 +66,4 @@ public class ObjectByteConvertUtil {
         }
         return object;
     }
-
 }

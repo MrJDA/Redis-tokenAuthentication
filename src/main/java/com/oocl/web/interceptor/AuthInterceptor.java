@@ -3,6 +3,7 @@ package com.oocl.web.interceptor;
 import com.oocl.web.annotatons.AuthToken;
 import com.oocl.web.util.JedisUtil;
 import com.oocl.web.util.TokenUtil;
+import io.netty.util.internal.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,6 @@ import java.util.Map;
 
 public class AuthInterceptor implements HandlerInterceptor {
 
-//    @Autowired
-//    private RedisTemplate redisTemplate;
-//    private Jedis jedis = new Jedis("127.0.0.1", 6379);
-
     private Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -40,7 +37,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             if(authToken!=null){
                String token = request.getHeader("token");
                logger.info(token);
-               if(token == null){
+               if(StringUtil.isNullOrEmpty(token)){
                    sendErrorMessage(response, "用户身份过期，请重新登录", 401);
                    return false;
                }
@@ -68,10 +65,13 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     private void sendErrorMessage(HttpServletResponse response, String message, int status) throws IOException, JSONException {
+        response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("message", message);
         jsonObject.put("status", status);
         out.append(jsonObject.toString());
+        out.flush();
+        out.close();
     }
 }

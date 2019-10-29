@@ -20,7 +20,6 @@ public class JedisUtil {
     }
 
     public static Object get(String key){
-
         Jedis jedis = jedisPool.getResource();
         byte[] keyBytes = key.getBytes();
         byte[] valueBytes = jedis.get(keyBytes);
